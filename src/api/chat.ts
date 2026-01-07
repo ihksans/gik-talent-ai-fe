@@ -9,13 +9,18 @@ export async function streamChat(
 ) {
   dispatch(startStreaming());
 
-  const res = await fetch(
-    `${API_BASE_URL}/v1/chat/tokens?message=${encodeURIComponent(message)}`,
-    {
-      headers: { Accept: "text/event-stream" },
-      signal: controller.signal,
+  const res = await fetch(`${API_BASE_URL}/v1/chat/stream`, {
+    method: "POST",
+    headers: {
+      Accept: "text/event-stream",
+      "Content-Type": "application/json",
     },
-  );
+    body: JSON.stringify({
+      message,
+      session_id: "abcd1222", // todo: dynamic session id
+    }),
+    signal: controller.signal,
+  });
 
   if (!res.body) {
     dispatch(stopStreaming());
@@ -26,18 +31,6 @@ export async function streamChat(
   const decoder = new TextDecoder("utf-8");
 
   let buffer = "";
-
-  // micro-batching
-  let tokenBuffer = "";
-  let rafId: number | null = null;
-
-  const flush = () => {
-    if (tokenBuffer) {
-      dispatch(appendToken(tokenBuffer));
-      tokenBuffer = "";
-    }
-    rafId = null;
-  };
 
   try {
     while (true) {
@@ -51,34 +44,34 @@ export async function streamChat(
       buffer = blocks.pop() || "";
 
       for (const block of blocks) {
-        let event = "";
-        let data = "";
+        const lines = block.split("\n");
 
-        for (const line of block.split("\n")) {
-          if (line.startsWith("event:")) {
-            event = line.replace("event:", "").trim();
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed.includes("data:")) continue;
+
+          const raw = trimmed.replace(/data:\s*/g, "");
+
+          if (raw === "[DONE]" || raw === "{}" || raw === "done") {
+            dispatch(stopStreaming());
+            return;
           }
-          if (line.startsWith("data:")) {
-            data += line.replace("data:", "");
+
+          try {
+            const json = JSON.parse(raw);
+            const delta = json?.choices?.[0]?.delta?.content;
+
+            if (delta !== undefined) {
+              dispatch(appendToken(delta));
+            }
+          } catch (err) {
+            console.error("JSON parse error:", raw);
           }
-        }
-
-        data = data.trim();
-
-        if (event === "done" || data === "[DONE]") {
-          flush();
-          controller.abort();
-          return;
-        }
-
-        if (event === "delta" && data && data !== "{}") {
-          tokenBuffer += data;
-          if (!rafId) rafId = requestAnimationFrame(flush);
         }
       }
     }
-  } catch (e) {
-    if ((e as any)?.name !== "AbortError") {
+  } catch (e: any) {
+    if (e?.name !== "AbortError") {
       console.error(e);
     }
   } finally {
@@ -86,7 +79,6 @@ export async function streamChat(
       reader.cancel();
     } catch {}
     reader.releaseLock();
-    flush();
     dispatch(stopStreaming());
   }
 }
