@@ -4,7 +4,12 @@ import type { RootState, AppDispatch } from "../store";
 import { addUserMessage } from "../store/chatSlice";
 import { streamChat } from "../api/chat";
 
-export default function ChatBox() {
+type Props = {
+  onToggleSidebar: () => void;
+  sidebarOpen: boolean;
+};
+
+export default function ChatBox({ onToggleSidebar }: Props) {
   const dispatch = useDispatch<AppDispatch>();
   const { messages, streaming } = useSelector((s: RootState) => s.chat);
 
@@ -34,10 +39,17 @@ export default function ChatBox() {
   };
 
   return (
-    <div className="flex flex-col h-screen max-w-3xl mx-auto bg-gray-100">
+    <div className="flex flex-col h-screen  mx-auto bg-gray-100">
       {/* Header */}
-      <div className="p-4 border-b bg-white font-semibold text-gray-700">
-        💬 AI Chat
+      <div className="p-4 border-b bg-white flex items-center gap-3">
+        <button
+          onClick={onToggleSidebar}
+          className="text-gray-600 hover:text-gray-900 text-xl"
+        >
+          ☰
+        </button>
+
+        <span className="font-semibold text-gray-700">Talent AI</span>
       </div>
 
       {/* Messages */}

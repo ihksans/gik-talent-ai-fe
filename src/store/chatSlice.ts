@@ -35,10 +35,18 @@ const chatSlice = createSlice({
     stopStreaming(state) {
       state.streaming = false;
     },
+    resetChat() {
+      return initialState;
+    },
   },
 });
 
-export const { addUserMessage, appendToken, startStreaming, stopStreaming } =
-  chatSlice.actions;
+export const {
+  addUserMessage,
+  appendToken,
+  startStreaming,
+  stopStreaming,
+  resetChat,
+} = chatSlice.actions;
 
 export default chatSlice.reducer;
