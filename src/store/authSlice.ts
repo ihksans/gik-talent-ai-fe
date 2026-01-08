@@ -5,12 +5,14 @@ interface AuthState {
   userId: string | null;
   token: string | null;
   refreshToken: string | null;
+  isAuthenticated: boolean;
 }
 
 const initialState: AuthState = {
   userId: localStorage.getItem("userId"),
   token: localStorage.getItem("token"),
   refreshToken: localStorage.getItem("refreshToken"),
+  isAuthenticated: !!localStorage.getItem("token"),
 };
 
 const authSlice = createSlice({

@@ -6,6 +6,8 @@ export async function streamChat(
   message: string,
   dispatch: AppDispatch,
   controller: AbortController,
+  userId: string | null,
+  sessionId: string,
 ) {
   dispatch(startStreaming());
 
@@ -17,7 +19,8 @@ export async function streamChat(
     },
     body: JSON.stringify({
       message,
-      session_id: "abcd1222", // todo: dynamic session id
+      session_id: sessionId,
+      user_id: userId,
     }),
     signal: controller.signal,
   });
