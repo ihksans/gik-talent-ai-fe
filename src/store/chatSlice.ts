@@ -8,11 +8,13 @@ export type Message = {
 export type ChatState = {
   messages: Message[];
   streaming: boolean;
+  sessionId: string | null;
 };
 
 const initialState: ChatState = {
   messages: [],
   streaming: false,
+  sessionId: null,
 };
 
 const chatSlice = createSlice({
@@ -38,6 +40,9 @@ const chatSlice = createSlice({
     resetChat() {
       return initialState;
     },
+    setSessionId(state, action: PayloadAction<string>) {
+      state.sessionId = action.payload;
+    },
   },
 });
 
@@ -47,6 +52,7 @@ export const {
   startStreaming,
   stopStreaming,
   resetChat,
+  setSessionId,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

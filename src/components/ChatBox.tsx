@@ -6,6 +6,7 @@ import { streamChat } from "../api/chat";
 import { LogOut } from "lucide-react";
 import { logout } from "../store/authSlice";
 import { useNavigate } from "react-router-dom";
+import { setSessionId } from "../store/chatSlice";
 
 type Props = {
   onToggleSidebar: () => void;
@@ -15,6 +16,8 @@ type Props = {
 export default function ChatBox({ onToggleSidebar }: Props) {
   const dispatch = useDispatch<AppDispatch>();
   const { messages, streaming } = useSelector((s: RootState) => s.chat);
+  const userId = useSelector((s: RootState) => s.auth.userId);
+  const sessionId = useSelector((s: RootState) => s.chat.sessionId);
 
   const [input, setInput] = useState("");
   const controllerRef = useRef<AbortController | null>(null);
@@ -32,16 +35,23 @@ export default function ChatBox({ onToggleSidebar }: Props) {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const send = async () => {
-    if (!input.trim() || streaming) return;
+  const send = async (text: string) => {
+    if (!text.trim() || streaming || !userId) return;
 
-    dispatch(addUserMessage(input));
+    let activeSessionId = sessionId;
+
+    if (!activeSessionId) {
+      activeSessionId = crypto.randomUUID();
+      dispatch(setSessionId(activeSessionId));
+    }
+
+    dispatch(addUserMessage(text));
     setInput("");
 
     const controller = new AbortController();
     controllerRef.current = controller;
 
-    await streamChat(input, dispatch, controller);
+    await streamChat(text, dispatch, controller, userId, activeSessionId);
   };
 
   const stop = () => {
@@ -104,14 +114,21 @@ export default function ChatBox({ onToggleSidebar }: Props) {
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && send()}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              send(input);
+            }
+          }}
           placeholder="Type your message..."
           className="flex-1 rounded-lg border px-4 py-2 focus:outline-none focus:ring focus:ring-blue-300"
         />
 
         {!streaming ? (
           <button
-            onClick={send}
+            onClick={() => send(input)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") send(input);
+            }}
             className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg"
           >
             Send
