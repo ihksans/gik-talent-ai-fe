@@ -59,6 +59,7 @@ export default function ChatBox({ onToggleSidebar }: Props) {
   };
 
   const templates = [
+    "Hi, dapatkah kamu membantu saya?",
     "Siapa saja backend yang sedang idle?",
     "Buatkan tim proyek beranggotakan 6 orang berisikan pm, be, fe, qa",
     "Siapa saja frontend yang menguasai react?",
