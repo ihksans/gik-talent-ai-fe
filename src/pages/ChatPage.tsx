@@ -1,12 +1,16 @@
+import { useState } from "react";
 import ChatBox from "../components/ChatBox";
 import { LogOut } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { logout } from "../store/authSlice";
 import { useNavigate } from "react-router-dom";
+import SideBar from "../components/SideBar";
 
 export default function ChatPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const onLogout = () => {
     dispatch(logout());
@@ -14,20 +18,24 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="relative h-screen">
-      {/* Logout button */}
-      <button
-        onClick={onLogout}
-        className="absolute top-4 right-4 flex items-center gap-2 
-                   bg-red-500 hover:bg-red-600 text-white 
-                   px-4 py-2 rounded-lg shadow"
+    <div className="relative h-screen flex overflow-hidden">
+      {/* Sidebar */}
+      <div
+        className={`transition-all duration-300 bg-gray-900 ${
+          sidebarOpen ? "w-64" : "w-0"
+        } overflow-hidden`}
       >
-        <LogOut size={18} />
-        Logout
-      </button>
+        <SideBar />
+      </div>
 
-      {/* Chat */}
-      <ChatBox />
+      {/* Main area */}
+      <div className="flex-1 relative">
+        {/* Logout button */}
+        <ChatBox
+          onToggleSidebar={() => setSidebarOpen((v) => !v)}
+          sidebarOpen={sidebarOpen}
+        />
+      </div>
     </div>
   );
 }

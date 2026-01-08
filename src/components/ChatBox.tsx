@@ -7,7 +7,12 @@ import { LogOut } from "lucide-react";
 import { logout } from "../store/authSlice";
 import { useNavigate } from "react-router-dom";
 
-export default function ChatBox() {
+type Props = {
+  onToggleSidebar: () => void;
+  sidebarOpen: boolean;
+};
+
+export default function ChatBox({ onToggleSidebar }: Props) {
   const dispatch = useDispatch<AppDispatch>();
   const { messages, streaming } = useSelector((s: RootState) => s.chat);
 
@@ -44,11 +49,18 @@ export default function ChatBox() {
   };
 
   return (
-    <div className="flex flex-col h-screen max-w-3xl mx-auto bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+    <div className="flex flex-col h-screen">
       {/* Header */}
       <div className="p-4 border-b bg-white flex items-center justify-between">
+        <div className="p-4 border-b bg-white flex items-center gap-3">
+          <button
+            onClick={onToggleSidebar}
+            className="text-gray-600 hover:text-gray-900 text-xl"
+          >
+            ☰
+          </button>
+        </div>
         <span className="font-semibold text-gray-700">Talent AI</span>
-
         <button
           onClick={onLogout}
           className="flex items-center gap-2 text-sm 
@@ -58,7 +70,6 @@ export default function ChatBox() {
           Logout
         </button>
       </div>
-
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((m, i) => (
