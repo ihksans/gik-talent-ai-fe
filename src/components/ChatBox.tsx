@@ -58,18 +58,8 @@ export default function ChatBox({ onToggleSidebar }: Props) {
     controllerRef.current?.abort();
   };
 
-  const sendMessage = async (text: string) => {
-    if (!text.trim() || streaming) return;
-
-    dispatch(addUserMessage(text));
-
-    const controller = new AbortController();
-    controllerRef.current = controller;
-
-    await streamChat(text, dispatch, controller);
-  };
-
   const templates = [
+    "Hi, dapatkah kamu membantu saya?",
     "Siapa saja backend yang sedang idle?",
     "Buatkan tim proyek beranggotakan 6 orang berisikan pm, be, fe, qa",
     "Siapa saja frontend yang menguasai react?",
@@ -104,7 +94,7 @@ export default function ChatBox({ onToggleSidebar }: Props) {
             {templates.map((text, i) => (
               <button
                 key={i}
-                onClick={() => sendMessage(text)}
+                onClick={() => send(text)}
                 className="
               max-w-[75%]
               px-4 py-3
