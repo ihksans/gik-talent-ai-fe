@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../store";
 import { addUserMessage } from "../store/chatSlice";
 import { streamChat } from "../api/chat";
+import { LogOut } from "lucide-react";
+import { logout } from "../store/authSlice";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   onToggleSidebar: () => void;
@@ -16,6 +19,13 @@ export default function ChatBox({ onToggleSidebar }: Props) {
   const [input, setInput] = useState("");
   const controllerRef = useRef<AbortController | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  const navigate = useNavigate();
+
+  const onLogout = () => {
+    dispatch(logout());
+    navigate("/login", { replace: true });
+  };
 
   // Auto scroll
   useEffect(() => {
@@ -39,19 +49,27 @@ export default function ChatBox({ onToggleSidebar }: Props) {
   };
 
   return (
-    <div className="flex flex-col h-screen  mx-auto bg-gray-100">
+    <div className="flex flex-col h-screen">
       {/* Header */}
-      <div className="p-4 border-b bg-white flex items-center gap-3">
-        <button
-          onClick={onToggleSidebar}
-          className="text-gray-600 hover:text-gray-900 text-xl"
-        >
-          ☰
-        </button>
-
+      <div className="p-4 border-b bg-white flex items-center justify-between">
+        <div className="p-4 border-b bg-white flex items-center gap-3">
+          <button
+            onClick={onToggleSidebar}
+            className="text-gray-600 hover:text-gray-900 text-xl"
+          >
+            ☰
+          </button>
+        </div>
         <span className="font-semibold text-gray-700">Talent AI</span>
+        <button
+          onClick={onLogout}
+          className="flex items-center gap-2 text-sm 
+                    text-red-600 hover:text-red-700"
+        >
+          <LogOut size={16} />
+          Logout
+        </button>
       </div>
-
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((m, i) => (
