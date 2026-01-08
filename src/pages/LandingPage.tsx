@@ -23,8 +23,8 @@ export default function LandingPage() {
         </h2>
 
         <p className="text-gray-300 max-w-xl mb-8">
-          Talent AI membantu kamu berdiskusi, menulis, dan berpikir lebih cepat
-          dengan percakapan cerdas berbasis AI.
+          Talent AI membantu mencari talenta yang sesuai dengan kebutuhan
+          proyek. Dapatkan rekomendasi talenta terbaik dengan cepat dan mudah.
         </p>
 
         <button
