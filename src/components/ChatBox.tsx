@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../store";
 import { addUserMessage } from "../store/chatSlice";
 import { streamChat } from "../api/chat";
+import { LogOut } from "lucide-react";
+import { logout } from "../store/authSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function ChatBox() {
   const dispatch = useDispatch<AppDispatch>();
@@ -11,6 +14,13 @@ export default function ChatBox() {
   const [input, setInput] = useState("");
   const controllerRef = useRef<AbortController | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  const navigate = useNavigate();
+
+  const onLogout = () => {
+    dispatch(logout());
+    navigate("/login", { replace: true });
+  };
 
   // Auto scroll
   useEffect(() => {
@@ -34,10 +44,19 @@ export default function ChatBox() {
   };
 
   return (
-    <div className="flex flex-col h-screen max-w-3xl mx-auto bg-gray-100">
+    <div className="flex flex-col h-screen max-w-3xl mx-auto bg-gradient-to-br from-gray-900 via-gray-800 to-black">
       {/* Header */}
-      <div className="p-4 border-b bg-white font-semibold text-gray-700">
-        💬 AI Chat
+      <div className="p-4 border-b bg-white flex items-center justify-between">
+        <span className="font-semibold text-gray-700">Talent AI</span>
+
+        <button
+          onClick={onLogout}
+          className="flex items-center gap-2 text-sm 
+                    text-red-600 hover:text-red-700"
+        >
+          <LogOut size={16} />
+          Logout
+        </button>
       </div>
 
       {/* Messages */}
