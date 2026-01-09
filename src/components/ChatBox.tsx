@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../store";
-import { addUserMessage } from "../store/chatSlice";
+import { addUserMessage, setSessionId } from "../store/chatSlice";
 import { streamChat } from "../api/chat";
 import { LogOut } from "lucide-react";
 import { logout } from "../store/authSlice";
 import { useNavigate } from "react-router-dom";
-import { setSessionId } from "../store/chatSlice";
+import MarkdownRenderer from "./MarkdownRenderer";
 
 type Props = {
   onToggleSidebar: () => void;
@@ -39,7 +39,6 @@ export default function ChatBox({ onToggleSidebar }: Props) {
     if (!text.trim() || streaming || !userId) return;
 
     let activeSessionId = sessionId;
-
     if (!activeSessionId) {
       activeSessionId = crypto.randomUUID();
       dispatch(setSessionId(activeSessionId));
@@ -61,7 +60,7 @@ export default function ChatBox({ onToggleSidebar }: Props) {
   const templates = [
     "Hi, dapatkah kamu membantu saya?",
     "Siapa saja backend yang sedang idle?",
-    "Buatkan tim proyek beranggotakan 6 orang berisikan pm, be, fe, qa",
+    "Buatkan tim proyek beranggotakan 6 orang",
     "Siapa saja frontend yang menguasai react?",
   ];
 
@@ -69,24 +68,24 @@ export default function ChatBox({ onToggleSidebar }: Props) {
     <div className="flex flex-col h-screen">
       {/* Header */}
       <div className="p-4 border-b bg-white flex items-center justify-between">
-        <div className="p-4 border-b bg-white flex items-center gap-3">
-          <button
-            onClick={onToggleSidebar}
-            className="text-gray-600 hover:text-gray-900 text-xl"
-          >
-            ☰
-          </button>
-        </div>
+        <button
+          onClick={onToggleSidebar}
+          className="text-gray-600 hover:text-gray-900 text-xl"
+        >
+          ☰
+        </button>
+
         <span className="font-semibold text-gray-700">Talent AI</span>
+
         <button
           onClick={onLogout}
-          className="flex items-center gap-2 text-sm 
-                    text-red-600 hover:text-red-700"
+          className="flex items-center gap-2 text-sm text-red-600 hover:text-red-700"
         >
           <LogOut size={16} />
           Logout
         </button>
       </div>
+
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.length === 0 && (
@@ -96,18 +95,17 @@ export default function ChatBox({ onToggleSidebar }: Props) {
                 key={i}
                 onClick={() => send(text)}
                 className="
-              max-w-[75%]
-              px-4 py-3
-              rounded-2xl
-              border
-              bg-white
-              text-sm
-              text-gray-700
-              shadow
-              hover:bg-gray-50
-              transition
-              text-left
-            "
+                  max-w-[75%]
+                  px-4 py-3
+                  rounded-2xl
+                  border
+                  bg-white
+                  text-sm
+                  text-gray-700
+                  shadow
+                  hover:bg-gray-50
+                  text-left
+                "
               >
                 {text}
               </button>
@@ -115,29 +113,37 @@ export default function ChatBox({ onToggleSidebar }: Props) {
           </div>
         )}
 
-        {messages.map((m, i) => (
-          <div
-            key={i}
-            className={`flex ${
-              m.role === "user" ? "justify-end" : "justify-start"
-            }`}
-          >
-            <div
-              className={`max-w-[80%] rounded-xl px-4 py-2 text-sm leading-relaxed shadow
-                ${
-                  m.role === "user"
-                    ? "bg-blue-500 text-white rounded-br-none"
-                    : "bg-white text-gray-800 rounded-bl-none"
-                }`}
-            >
-              {m.content || <span className="opacity-40 italic">...</span>}
-            </div>
-          </div>
-        ))}
+        {messages.map((m, i) => {
+          const isAssistant = m.role === "assistant";
+          const isStreamingAssistant =
+            streaming && isAssistant && i === messages.length - 1;
 
-        {streaming && (
-          <div className="text-sm text-gray-400 italic">AI is typing…</div>
-        )}
+          return (
+            <div
+              key={i}
+              className={`flex ${isAssistant ? "justify-start" : "justify-end"}`}
+            >
+              <div
+                className={`max-w-[80%] rounded-xl px-4 py-2 text-sm shadow
+                  ${
+                    isAssistant
+                      ? "bg-white text-gray-800"
+                      : "bg-blue-500 text-white"
+                  }`}
+              >
+                {/* STREAMING = TEXT ONLY */}
+                {isStreamingAssistant ? (
+                  <span className="whitespace-pre-wrap">
+                    {m.content}
+                    <span className="animate-pulse">▍</span>
+                  </span>
+                ) : (
+                  <MarkdownRenderer content={m.content} />
+                )}
+              </div>
+            </div>
+          );
+        })}
 
         <div ref={bottomRef} />
       </div>
@@ -147,11 +153,7 @@ export default function ChatBox({ onToggleSidebar }: Props) {
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              send(input);
-            }
-          }}
+          onKeyDown={(e) => e.key === "Enter" && send(input)}
           placeholder="Type your message..."
           className="flex-1 rounded-lg border px-4 py-2 focus:outline-none focus:ring focus:ring-blue-300"
         />
@@ -159,9 +161,6 @@ export default function ChatBox({ onToggleSidebar }: Props) {
         {!streaming ? (
           <button
             onClick={() => send(input)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") send(input);
-            }}
             className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg"
           >
             Send
