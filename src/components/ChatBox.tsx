@@ -6,7 +6,6 @@ import { streamChat } from "../api/chat";
 import { LogOut } from "lucide-react";
 import { logout } from "../store/authSlice";
 import { useNavigate } from "react-router-dom";
-import MarkdownRenderer from "./MarkdownRenderer";
 
 type Props = {
   onToggleSidebar: () => void;
@@ -30,7 +29,6 @@ export default function ChatBox({ onToggleSidebar }: Props) {
     navigate("/login", { replace: true });
   };
 
-  // Auto scroll
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -65,7 +63,7 @@ export default function ChatBox({ onToggleSidebar }: Props) {
   ];
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-screen bg-gray-50">
       {/* Header */}
       <div className="p-4 border-b bg-white flex items-center justify-between">
         <button
@@ -121,24 +119,32 @@ export default function ChatBox({ onToggleSidebar }: Props) {
           return (
             <div
               key={i}
-              className={`flex ${isAssistant ? "justify-start" : "justify-end"}`}
+              className={`flex ${
+                isAssistant ? "justify-start" : "justify-end"
+              }`}
             >
               <div
-                className={`max-w-[80%] rounded-xl px-4 py-2 text-sm shadow
-                  ${
-                    isAssistant
-                      ? "bg-white text-gray-800"
-                      : "bg-blue-500 text-white"
-                  }`}
+                className={`
+                  max-w-[80%]
+                  rounded-xl
+                  px-4 py-2
+                  text-sm
+                  shadow
+                  bg-white
+                  ${isAssistant ? "text-gray-800" : "bg-blue-500"}
+                `}
               >
-                {/* STREAMING = TEXT ONLY */}
+                {/* STREAMING → TEXT */}
                 {isStreamingAssistant ? (
                   <span className="whitespace-pre-wrap">
                     {m.content}
                     <span className="animate-pulse">▍</span>
                   </span>
                 ) : (
-                  <MarkdownRenderer content={m.content} />
+                  <div
+                    className="max-w-none"
+                    dangerouslySetInnerHTML={{ __html: m.content }}
+                  />
                 )}
               </div>
             </div>
