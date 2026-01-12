@@ -1,15 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-
-export type Message = {
-  role: "user" | "assistant";
-  content: string;
-};
-
-export type ChatState = {
-  messages: Message[];
-  streaming: boolean;
-  sessionId: string | null;
-};
+import type { ChatState } from "./types";
 
 const initialState: ChatState = {
   messages: [],

@@ -1,16 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState, AppDispatch } from "../store";
-import { addUserMessage, setSessionId } from "../store/chatSlice";
-import { streamChat } from "../api/chat";
+import type { RootState, AppDispatch } from "../../store";
+import { addUserMessage, setSessionId } from "../../store/ChatSlice/chatSlice";
+import { streamChat } from "../../api/chat";
 import { LogOut } from "lucide-react";
-import { logout } from "../store/authSlice";
+import { logout } from "../../store/AuthSlice/authSlice";
 import { useNavigate } from "react-router-dom";
-
-type Props = {
-  onToggleSidebar: () => void;
-  sidebarOpen: boolean;
-};
+import type { Props } from "./types";
 
 export default function ChatBox({ onToggleSidebar }: Props) {
   const dispatch = useDispatch<AppDispatch>();

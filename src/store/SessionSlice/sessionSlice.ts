@@ -1,15 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-
-export interface Message {
-  role: "user" | "assistant";
-  content: string;
-}
-
-export interface SessionState {
-  sessions: Record<string, Message[]>;
-  currentSessionId: string | null;
-}
+import type { SessionState, Message } from "./types";
 
 const initialState: SessionState = {
   sessions: {},

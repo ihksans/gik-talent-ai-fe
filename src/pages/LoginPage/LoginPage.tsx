@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useLoginMutation } from "../api/auth";
+import { useLoginMutation } from "../../api/auth";
 import { useDispatch } from "react-redux";
-import { setCredentials } from "../store/authSlice";
+import { setCredentials } from "../../store/AuthSlice/authSlice";
 import { useSelector } from "react-redux";
-import type { RootState } from "../store";
+import type { RootState } from "../../store";
 
 export default function LoginPage() {
   const navigate = useNavigate();

@@ -1,15 +1,5 @@
 import { api } from "./api";
-
-export interface LoginRequest {
-  username: string;
-  password: string;
-}
-
-export interface LoginResponse {
-  userId: string;
-  token: string;
-  refreshToken: string;
-}
+import type { LoginRequest, LoginResponse } from "./types";
 
 export const authApi = api.injectEndpoints({
   endpoints: (builder) => ({

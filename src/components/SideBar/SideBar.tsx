@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
-import type { AppDispatch } from "../store";
-import { resetChat } from "../store/chatSlice";
+import type { AppDispatch } from "../../store";
+import { resetChat } from "../../store/ChatSlice/chatSlice";
 
 export default function Sidebar({ hidden }: { hidden?: boolean }) {
   const dispatch = useDispatch<AppDispatch>();
@@ -26,11 +26,6 @@ export default function Sidebar({ hidden }: { hidden?: boolean }) {
         <ChatItem title="Diskusi FastAPI" />
         <ChatItem title="Belajar ChatGPT API" />
         <ChatItem title="Puisi & Prosa" />
-      </div>
-
-      {/* Footer */}
-      <div className="p-4 border-t border-gray-700 text-sm text-gray-400">
-        Ihksan Setiawan
       </div>
     </aside>
   );
