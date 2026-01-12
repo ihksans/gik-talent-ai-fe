@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
-import LandingPage from "../pages/LandingPage";
-import LoginPage from "../pages/LoginPage";
-import ChatPage from "../pages/ChatPage";
+import LandingPage from "../pages/LandingPage/LandingPage";
+import LoginPage from "../pages/LoginPage/LoginPage";
+import ChatPage from "../pages/ChatPage/ChatPage";
 import ProtectedRoute from "./ProtectedRoute";
 
 export const router = createBrowserRouter([

@@ -1,6 +1,10 @@
 import { API_BASE_URL } from "../../config";
 import type { AppDispatch } from "../store";
-import { appendToken, startStreaming, stopStreaming } from "../store/chatSlice";
+import {
+  appendToken,
+  startStreaming,
+  stopStreaming,
+} from "../store/ChatSlice/chatSlice";
 
 export async function streamChat(
   message: string,

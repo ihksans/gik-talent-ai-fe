@@ -1,6 +1,6 @@
 import { useState } from "react";
-import ChatBox from "../components/ChatBox";
-import SideBar from "../components/SideBar";
+import ChatBox from "../../components/ChatBox/ChatBox";
+import SideBar from "../../components/SideBar/SideBar";
 
 export default function ChatPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
