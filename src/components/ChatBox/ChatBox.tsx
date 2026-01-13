@@ -1,14 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../store";
-import { addUserMessage, setSessionId } from "../../store/ChatSlice/chatSlice";
+import {
+  addUserMessage,
+  setSessionId,
+  setMessages,
+} from "../../store/ChatSlice/chatSlice";
 import { streamChat } from "../../api/chat";
 import { LogOut } from "lucide-react";
 import { logout } from "../../store/AuthSlice/authSlice";
 import { useNavigate } from "react-router-dom";
 import type { Props } from "./types";
+import { getChatSession } from "../../api/chat";
 
-export default function ChatBox({ onToggleSidebar }: Props) {
+export default function ChatBox({ onToggleSidebar, initialSessionId }: Props) {
   const dispatch = useDispatch<AppDispatch>();
   const { messages, streaming } = useSelector((s: RootState) => s.chat);
   const userId = useSelector((s: RootState) => s.auth.userId);
@@ -26,6 +31,30 @@ export default function ChatBox({ onToggleSidebar }: Props) {
   };
 
   useEffect(() => {
+    if (!initialSessionId) return;
+
+    const loadSession = async () => {
+      try {
+        dispatch(setSessionId(initialSessionId));
+
+        const data = await getChatSession(initialSessionId);
+
+        const mappedMessages = data.map((m: any) => ({
+          role: m.role === "human" ? "user" : "assistant",
+          content: m.content,
+          date: m.date,
+        }));
+
+        dispatch(setMessages(mappedMessages));
+      } catch (err) {
+        console.error("Failed load session", err);
+      }
+    };
+
+    loadSession();
+  }, [initialSessionId, dispatch]);
+
+  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
@@ -36,6 +65,7 @@ export default function ChatBox({ onToggleSidebar }: Props) {
     if (!activeSessionId) {
       activeSessionId = crypto.randomUUID();
       dispatch(setSessionId(activeSessionId));
+      navigate(`/chat/${activeSessionId}`, { replace: true });
     }
 
     dispatch(addUserMessage(text));

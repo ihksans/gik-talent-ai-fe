@@ -89,3 +89,18 @@ export async function streamChat(
     dispatch(stopStreaming());
   }
 }
+
+export async function getChatSession(sessionId: string) {
+  const res = await fetch(`${API_BASE_URL}/v1/chat/session/${sessionId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to load chat session");
+  }
+
+  return res.json();
+}

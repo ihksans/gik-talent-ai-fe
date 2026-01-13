@@ -1,9 +1,11 @@
 import { useState } from "react";
 import ChatBox from "../../components/ChatBox/ChatBox";
 import SideBar from "../../components/SideBar/SideBar";
+import { useParams } from "react-router-dom";
 
 export default function ChatPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { sessionId } = useParams();
 
   return (
     <div className="relative h-screen flex overflow-hidden">
@@ -22,6 +24,7 @@ export default function ChatPage() {
         <ChatBox
           onToggleSidebar={() => setSidebarOpen((v) => !v)}
           sidebarOpen={sidebarOpen}
+          initialSessionId={sessionId}
         />
       </div>
     </div>

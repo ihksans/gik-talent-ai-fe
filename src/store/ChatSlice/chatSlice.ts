@@ -33,6 +33,9 @@ const chatSlice = createSlice({
     setSessionId(state, action: PayloadAction<string>) {
       state.sessionId = action.payload;
     },
+    setMessages: (state, action) => {
+      state.messages = action.payload;
+    },
   },
 });
 
@@ -43,6 +46,7 @@ export const {
   stopStreaming,
   resetChat,
   setSessionId,
+  setMessages,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;
