@@ -31,12 +31,16 @@ export default function ChatBox({ onToggleSidebar, initialSessionId }: Props) {
   };
 
   useEffect(() => {
-    if (!initialSessionId) return;
+    if (
+      !initialSessionId ||
+      (initialSessionId === sessionId && messages.length > 0)
+    ) {
+      return;
+    }
 
     const loadSession = async () => {
       try {
-        dispatch(setSessionId(initialSessionId));
-
+        // Set loading state jika perlu
         const data = await getChatSession(initialSessionId);
 
         const mappedMessages = data.map((m: any) => ({
@@ -45,6 +49,7 @@ export default function ChatBox({ onToggleSidebar, initialSessionId }: Props) {
           date: m.date,
         }));
 
+        dispatch(setSessionId(initialSessionId));
         dispatch(setMessages(mappedMessages));
       } catch (err) {
         console.error("Failed load session", err);
@@ -62,9 +67,11 @@ export default function ChatBox({ onToggleSidebar, initialSessionId }: Props) {
     if (!text.trim() || streaming || !userId) return;
 
     let activeSessionId = sessionId;
+
     if (!activeSessionId) {
       activeSessionId = crypto.randomUUID();
       dispatch(setSessionId(activeSessionId));
+
       navigate(`/chat/${activeSessionId}`, { replace: true });
     }
 
