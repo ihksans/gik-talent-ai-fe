@@ -24,7 +24,7 @@ export default function SideBar({ hidden }: { hidden?: boolean }) {
   const [history, setHistory] = useState<ChatHistoryItem[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // 🔥 Load chat history
+  // Load chat history
   useEffect(() => {
     if (!userId) return;
 
