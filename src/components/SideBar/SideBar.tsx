@@ -43,13 +43,13 @@ export default function SideBar({ hidden }: { hidden?: boolean }) {
     loadHistory();
   }, [userId]);
 
-  // ➕ New Chat
+  // New Chat
   const onNewChat = () => {
     dispatch(resetChat());
     navigate("/chat");
   };
 
-  // 📂 Open existing chat
+  // Open existing chat
   const openChat = (sessionId: string) => {
     dispatch(setOpeningSession(true));
     dispatch(setSessionId(sessionId));
