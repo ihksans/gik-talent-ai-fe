@@ -7,4 +7,5 @@ export type ChatState = {
   messages: Message[];
   streaming: boolean;
   sessionId: string | null;
+  openingSession: false;
 };

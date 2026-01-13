@@ -5,6 +5,7 @@ const initialState: ChatState = {
   messages: [],
   streaming: false,
   sessionId: null,
+  openingSession: false,
 };
 
 const chatSlice = createSlice({
@@ -36,6 +37,9 @@ const chatSlice = createSlice({
     setMessages: (state, action) => {
       state.messages = action.payload;
     },
+    setOpeningSession: (state, action) => {
+      state.openingSession = action.payload;
+    },
   },
 });
 
@@ -47,6 +51,7 @@ export const {
   resetChat,
   setSessionId,
   setMessages,
+  setOpeningSession,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

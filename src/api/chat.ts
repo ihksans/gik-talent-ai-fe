@@ -104,3 +104,19 @@ export async function getChatSession(sessionId: string) {
 
   return res.json();
 }
+
+export async function getChatHistory(userId: string) {
+  const res = await fetch(`${API_BASE_URL}/v1/chat/history/${userId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to load chat history");
+  }
+
+  return res.json();
+}
