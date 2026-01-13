@@ -19,6 +19,7 @@ type ChatHistoryItem = {
 export default function SideBar({ hidden }: { hidden?: boolean }) {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const refreshTick = useSelector((s: RootState) => s.chat.refreshHistoryTick); // Ambil dari Redux
 
   const userId = useSelector((s: RootState) => s.auth.userId);
   const [history, setHistory] = useState<ChatHistoryItem[]>([]);
@@ -41,7 +42,7 @@ export default function SideBar({ hidden }: { hidden?: boolean }) {
     };
 
     loadHistory();
-  }, [userId]);
+  }, [userId, refreshTick]);
 
   // New Chat
   const onNewChat = () => {
