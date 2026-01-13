@@ -5,6 +5,8 @@ const initialState: ChatState = {
   messages: [],
   streaming: false,
   sessionId: null,
+  openingSession: false,
+  refreshHistoryTick: 0,
 };
 
 const chatSlice = createSlice({
@@ -33,6 +35,15 @@ const chatSlice = createSlice({
     setSessionId(state, action: PayloadAction<string>) {
       state.sessionId = action.payload;
     },
+    setMessages: (state, action) => {
+      state.messages = action.payload;
+    },
+    setOpeningSession: (state, action) => {
+      state.openingSession = action.payload;
+    },
+    triggerHistoryRefresh(state) {
+      state.refreshHistoryTick += 1;
+    },
   },
 });
 
@@ -43,6 +54,9 @@ export const {
   stopStreaming,
   resetChat,
   setSessionId,
+  setMessages,
+  setOpeningSession,
+  triggerHistoryRefresh,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

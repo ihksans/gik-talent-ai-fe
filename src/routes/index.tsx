@@ -9,6 +9,9 @@ export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
   {
     element: <ProtectedRoute />,
-    children: [{ path: "/chat", element: <ChatPage /> }],
+    children: [
+      { path: "/chat", element: <ChatPage /> },
+      { path: "/chat/:sessionId", element: <ChatPage /> },
+    ],
   },
 ]);

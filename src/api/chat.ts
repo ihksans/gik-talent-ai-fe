@@ -4,6 +4,7 @@ import {
   appendToken,
   startStreaming,
   stopStreaming,
+  triggerHistoryRefresh,
 } from "../store/ChatSlice/chatSlice";
 
 export async function streamChat(
@@ -61,6 +62,7 @@ export async function streamChat(
 
           if (raw === "[DONE]" || raw === "{}" || raw === "done") {
             dispatch(stopStreaming());
+            dispatch(triggerHistoryRefresh());
             return;
           }
 
@@ -88,4 +90,34 @@ export async function streamChat(
     reader.releaseLock();
     dispatch(stopStreaming());
   }
+}
+
+export async function getChatSession(sessionId: string) {
+  const res = await fetch(`${API_BASE_URL}/v1/chat/session/${sessionId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to load chat session");
+  }
+
+  return res.json();
+}
+
+export async function getChatHistory(userId: string) {
+  const res = await fetch(`${API_BASE_URL}/v1/chat/history/${userId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to load chat history");
+  }
+
+  return res.json();
 }
