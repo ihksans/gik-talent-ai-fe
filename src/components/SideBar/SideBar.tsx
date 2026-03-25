@@ -55,6 +55,7 @@ export default function SideBar({ hidden }: { hidden?: boolean }) {
     dispatch(setOpeningSession(true));
     dispatch(setSessionId(sessionId));
     navigate(`/chat/${sessionId}`);
+    window.location.href = `/chat/${sessionId}`;
   };
 
   return (

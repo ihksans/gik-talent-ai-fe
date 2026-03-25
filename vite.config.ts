@@ -14,6 +14,12 @@ export default defineConfig(({ mode }) => {
           secure: true,
         },
       },
+      host: true,
+      port: 5173,
+      strictPort: true,
+      hmr: {
+      clientPort: 443,
+    },
     },
   };
 });

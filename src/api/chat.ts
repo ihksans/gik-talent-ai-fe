@@ -16,7 +16,7 @@ export async function streamChat(
 ) {
   dispatch(startStreaming());
 
-  const res = await fetch(`${API_BASE_URL}/v1/chat/stream`, {
+  const res = await fetch(`${API_BASE_URL}/api/v1/chat/stream`, {
     method: "POST",
     headers: {
       Accept: "text/event-stream",
@@ -93,7 +93,7 @@ export async function streamChat(
 }
 
 export async function getChatSession(sessionId: string) {
-  const res = await fetch(`${API_BASE_URL}/v1/chat/session/${sessionId}`, {
+  const res = await fetch(`${API_BASE_URL}/api/v1/chat/session/${sessionId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -108,7 +108,7 @@ export async function getChatSession(sessionId: string) {
 }
 
 export async function getChatHistory(userId: string) {
-  const res = await fetch(`${API_BASE_URL}/v1/chat/history/${userId}`, {
+  const res = await fetch(`${API_BASE_URL}/api/v1/chat/history/${userId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

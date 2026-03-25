@@ -69,7 +69,7 @@ export default function ChatBox({ onToggleSidebar, initialSessionId }: Props) {
     let activeSessionId = sessionId;
 
     if (!activeSessionId) {
-      activeSessionId = crypto.randomUUID();
+      activeSessionId = generateUUID();
       dispatch(setSessionId(activeSessionId));
 
       navigate(`/chat/${activeSessionId}`, { replace: true });
@@ -91,9 +91,22 @@ export default function ChatBox({ onToggleSidebar, initialSessionId }: Props) {
   const templates = [
     "Hi, dapatkah kamu membantu saya?",
     "Siapa saja backend yang sedang idle?",
-    "Buatkan tim proyek beranggotakan 6 orang",
+    "Buatkan tim proyek beranggotakan 6 orang yang terdiri dari frontend menguasai react dan backend menguasai dotnet.",
     "Siapa saja frontend yang menguasai react?",
   ];
+
+  const generateUUID = () => {
+  if (typeof globalThis.crypto?.randomUUID === "function") {
+    return globalThis.crypto.randomUUID();
+  }
+
+  // fallback manual
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+};
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">

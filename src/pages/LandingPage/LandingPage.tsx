@@ -8,12 +8,6 @@ export default function LandingPage() {
       {/* Header */}
       <header className="p-6 flex justify-between items-center">
         <h1 className="text-xl font-semibold">Talent AI</h1>
-        <button
-          onClick={() => navigate("/chat")}
-          className="px-4 py-2 text-sm rounded-lg bg-white text-black hover:bg-gray-200 transition"
-        >
-          Start Chat
-        </button>
       </header>
 
       {/* Hero */}

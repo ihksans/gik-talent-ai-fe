@@ -12,7 +12,7 @@ export default function LoginPage() {
 
   const token = useSelector((s: RootState) => s.auth.token);
 
-  const [login, { isLoading, isSuccess, data, isError }] = useLoginMutation();
+  const [login, { isLoading, isSuccess, data, isError, error }] = useLoginMutation();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -26,8 +26,21 @@ export default function LoginPage() {
     if (isSuccess && data) {
       dispatch(setCredentials(data));
       navigate("/chat", { replace: true });
+    // } else if (error) {
+    //   const err = error as any;
+    //   const isServerDown = err.status === 'FETCH_ERROR' || err.status === 'TIMEOUT_ERROR' || (typeof err.status === 'number' && err.status >= 500);
+
+    //   if (isServerDown) {
+    //     console.warn("Auth server is down, proceeding with mock credentials.");
+    //     dispatch(setCredentials({
+    //       userId: "81314787-537b-474f-999a-9152c9703bbb",
+    //       token: "fake-token",
+    //       refreshToken: "fake-refresh-token",
+    //     }));
+    //     navigate("/chat", { replace: true });
+    //   }
     }
-  }, [isSuccess, data, dispatch, navigate]);
+  }, [isSuccess, data, error, dispatch, navigate]);
 
   useEffect(() => {
     if (token) navigate("/chat", { replace: true });
